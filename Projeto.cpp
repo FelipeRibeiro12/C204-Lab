@@ -15,7 +15,7 @@ struct treenode {
 
 typedef treenode *treenodeptr;
 
-void newPokemon(treenodeptr &p, int nPokemon, string name, string type, int atack, int life) {
+void novoPokemon(treenodeptr &p, int nPokemon, string name, string type, int atack, int life) {
     if (p == NULL) {
         p = new treenode;
         p->number = nPokemon;
@@ -26,13 +26,13 @@ void newPokemon(treenodeptr &p, int nPokemon, string name, string type, int atac
         p->left = NULL;
         p->right = NULL;
     } else if (nPokemon < p->number) {
-        newPokemon(p->left, nPokemon, name, type, atack, life);
+        novoPokemon(p->left, nPokemon, name, type, atack, life);
     } else {
-        newPokemon(p->right, nPokemon, name, type, atack, life);
+        novoPokemon(p->right, nPokemon, name, type, atack, life);
     }
 }
 
-treenodeptr tPesq(treenodeptr p, int x) {
+treenodeptr pokedexPesq(treenodeptr p, int x) {
     if (p == NULL)
         return NULL;
     else if (x == p->number) {
@@ -43,9 +43,9 @@ treenodeptr tPesq(treenodeptr p, int x) {
         cout << endl;
         return p;
     } else if (x < p->number) {
-        return tPesq(p->left, x);
+        return pokedexPesq(p->left, x);
     } else {
-        return tPesq(p->right, x);
+        return pokedexPesq(p->right, x);
     }
 }
 
@@ -61,16 +61,17 @@ void emOrdem(treenodeptr p) {
     }
 }
 
-void pDestruir(treenodeptr &pokedex) {
+void pokedexDestruir(treenodeptr &pokedex) {
     if (pokedex != NULL) {
-        pDestruir(pokedex->left);
-        pDestruir(pokedex->right);
+        pokedexDestruir(pokedex->left);
+        pokedexDestruir(pokedex->right);
         delete pokedex;
     }
     pokedex = NULL;
 }
 
-treenodeptr findMin(treenodeptr p) {
+//Encontra e retorna o com o menor numero em uma subarvore
+treenodeptr menorPokemon(treenodeptr p) {
     while (p->left != NULL) {
         p = p->left;
     }
@@ -103,7 +104,7 @@ void removePokemon(treenodeptr &p, int x) {
             delete temp;
         }
         else { //No com dois filhos
-            treenodeptr temp = findMin(p->right);
+            treenodeptr temp = menorPokemon(p->right); //Encontra o no sucessor ao que vai ser removido, substituindo pelos valores do no encontrado antes de remover
             p->number = temp->number;
             p->name = temp->name;
             p->type = temp->type;
@@ -125,8 +126,6 @@ int main() {
     int life;
     int pesq;
     nPokemon = 0;
-    
-    cout << "Bem Vindo!" << endl;
     
     do {
 	cout << "Bem Vindo!" << endl << "-- MENU --" << endl;
@@ -160,7 +159,7 @@ int main() {
                     cin >> atack;
                     cout << "Vida: ";
                     cin >> life;
-                    newPokemon(pokedex, nPokemon, name, type, atack, life);
+                    novoPokemon(pokedex, nPokemon, name, type, atack, life);
                     cout << "Pokedex atualizada!" << endl << endl;
                     cout << "0 - Sair do cadastro;" << endl << "1 - Adicionar outro pokemon." << endl << endl;
                     cin >> choiceaux;
@@ -181,7 +180,7 @@ int main() {
                 cout << "Digite o numero do pokemon na pokedex:" << endl;
                 
                 cin >> pesq;
-                tPesq(pokedex, pesq);
+                pokedexPesq(pokedex, pesq);
                 cin.ignore();
                 break;
             
@@ -201,7 +200,7 @@ int main() {
                 if (aux5 == 2) {
                     cout << "Deletando pokedex..." << endl;
                     
-                    pDestruir(pokedex);
+                    pokedexDestruir(pokedex);
                     cout << "Pokedex limpa." << endl;
                 }
                 else
@@ -219,7 +218,7 @@ int main() {
         
     } while (choice != 0);
     
-    pDestruir(pokedex);
+    pokedexDestruir(pokedex);
     
     return 0;
 }
